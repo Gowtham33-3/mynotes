@@ -1,3 +1,25 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: mynotes
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/mynotes
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Kolkata
+jwt:
+  secret: my-notes-app-super-secret-key-which-is-at-least-32-bytes-long
+  access-token-expiry: 900000
+  refresh-token-expiry: 604800000
