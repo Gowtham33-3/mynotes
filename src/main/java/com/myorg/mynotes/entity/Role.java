@@ -1,4 +1,4 @@
-package com.myorg.mynotes.user.entity;
+package com.myorg.mynotes.entity;
 
 public enum Role {
     USER,

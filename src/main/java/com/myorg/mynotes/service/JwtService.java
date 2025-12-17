@@ -1,6 +1,6 @@
-package com.myorg.mynotes.auth.jwt;
+package com.myorg.mynotes.service;
 
-import com.myorg.mynotes.user.entity.User;
+import com.myorg.mynotes.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Service
@@ -26,7 +28,7 @@ public class JwtService {
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .subject(user.getId().toString())
-                .claim("email", user.getEmail())
+                .claim("username", user.getUsername())
                 .claim("role", user.getRole())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + accessTokenExpiry))
@@ -65,5 +67,18 @@ public class JwtService {
                 .claim("type", "refresh")
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public LocalDateTime extractExpiry(String token) {
+        Date expiration = Jwts.parser()
+                .verifyWith(signingKey)
+                .build()
+                .parseSignedClaims(token)
+                .getBody()
+                .getExpiration();
+
+        return expiration.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 }

@@ -1,8 +1,8 @@
 package com.myorg.mynotes.config;
 
-import com.myorg.mynotes.auth.jwt.JwtAuthFilter;
-import com.myorg.mynotes.user.repository.UserRepository;
-import com.myorg.mynotes.user.service.CustomUserDetailsService;
+import com.myorg.mynotes.filter.JwtAuthFilter;
+import com.myorg.mynotes.repository.UserRepository;
+import com.myorg.mynotes.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,9 +30,8 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(s ->
-                        s.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
@@ -45,11 +44,6 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder (){
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    UserDetailsService userDetailsService (UserRepository userRepository){
-        return new CustomUserDetailsService(userRepository);
     }
 
     @Bean

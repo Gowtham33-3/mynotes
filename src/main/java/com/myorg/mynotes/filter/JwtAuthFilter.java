@@ -1,7 +1,8 @@
-package com.myorg.mynotes.auth.jwt;
+package com.myorg.mynotes.filter;
 
-import com.myorg.mynotes.user.entity.User;
-import com.myorg.mynotes.user.repository.UserRepository;
+import com.myorg.mynotes.service.JwtService;
+import com.myorg.mynotes.entity.User;
+import com.myorg.mynotes.repository.UserRepository;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-
+        String path = request.getServletPath();
+        if (path.startsWith("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String header = request.getHeader("Authorization");
 
         if (header == null || !header.startsWith("Bearer ")) {
@@ -46,6 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         Long userId = jwtService.extractUserId(token);
 
         User user = userRepository.findById(userId).orElse(null);
+
         if (user == null) {
             filterChain.doFilter(request, response);
             return;

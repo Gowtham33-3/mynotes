@@ -1,6 +1,6 @@
-package com.myorg.mynotes.user.service;
+package com.myorg.mynotes.service;
 
-import com.myorg.mynotes.user.repository.UserRepository;
+import com.myorg.mynotes.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,12 +14,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email)
+    public UserDetails loadUserByUsername(String userName)
             throws UsernameNotFoundException {
 
-        return userRepository.findByEmail(email)
+        return userRepository.findByUserName(userName)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with email: " + email)
+                        new UsernameNotFoundException("User not found with useName: " + userName)
                 );
     }
 }
