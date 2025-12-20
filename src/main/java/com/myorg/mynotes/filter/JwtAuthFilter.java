@@ -53,7 +53,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         User user = userRepository.findById(userId).orElse(null);
 
         if (user == null) {
-            filterChain.doFilter(request, response);
             return;
         }
 

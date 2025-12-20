@@ -72,9 +72,17 @@ public class AuthService {
         return new LoginResponse(accessToken);
     }
 
+    @Transactional
+    public void logout(Long userId) {
+        refreshTokenRepository.deleteByUser_Id(userId);
+    }
+
+
     private String generateRefreshToken() {
         byte[] bytes = new byte[64];
         new SecureRandom().nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
+
+
 }
