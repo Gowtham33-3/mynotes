@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class LoginResponse {
 
-    @JsonProperty("access-token")
+    @JsonProperty("accessToken")
     private  String accessToken;
 
 }

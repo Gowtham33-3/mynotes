@@ -15,10 +15,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipal;
 
@@ -69,7 +66,13 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshToken(
+            @CookieValue(name = "refresh_token", required = false) String refreshToken
+    ) {
+        LoginResponse response = authService.refreshAccessToken(refreshToken);
+        return ResponseEntity.ok(response);
+    }
 
 
 }

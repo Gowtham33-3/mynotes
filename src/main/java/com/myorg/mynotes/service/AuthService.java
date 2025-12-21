@@ -78,11 +78,39 @@ public class AuthService {
     }
 
 
+    @Transactional
+    public LoginResponse refreshAccessToken(String refreshToken) {
+
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new RuntimeException("Refresh token missing");
+        }
+
+        String hashedToken = RefreshTokenHasher.hash(refreshToken);
+
+        RefreshToken tokenEntity = refreshTokenRepository
+                .findByTokenHash(hashedToken)
+                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+
+        if (tokenEntity.getExpiryAt().isBefore(Instant.now())) {
+            refreshTokenRepository.delete(tokenEntity);
+            throw new RuntimeException("Refresh token expired");
+        }
+
+        User user = tokenEntity.getUser();
+
+        String newAccessToken = jwtService.generateAccessToken(user);
+
+        return new LoginResponse(newAccessToken);
+    }
+
+
     private String generateRefreshToken() {
         byte[] bytes = new byte[64];
         new SecureRandom().nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
+
+
 
 
 }
